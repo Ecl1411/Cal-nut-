@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Conversiones</title>
+</head>
+<body>
+    <h1>Calculadora de Conversiones (meq, mmol, mg)</h1>
+    <label for="element">Elemento:</label>
+    <select id="element">
+        <option value="Na">Sodio (Na)</option>
+        <option value="K">Potasio (K)</option>
+        <option value="P">Fósforo (P)</option>
+        <option value="Ca">Calcio (Ca)</option>
+        <option value="Mg">Magnesio (Mg)</option>
+    </select>
+
+    <label for="inputValue">Valor:</label>
+    <input type="number" id="inputValue">
+
+    <label for="inputUnit">Unidad de entrada:</label>
+    <select id="inputUnit">
+        <option value="meq">meq</option>
+        <option value="mmol">mmol</option>
+        <option value="mg">mg</option>
+    </select>
+
+    <button onclick="convert()">Convertir</button>
+
+    <h2>Resultados:</h2>
+    <p id="results"></p>
+
+    <script>
+        const conversions = {
+            "Na": { meqToMmol: 1, mmolToMg: 23 },
+            "K": { meqToMmol: 1, mmolToMg: 39.1 },
+            "P": { meqToMmol: 0.5, mmolToMg: 31 },
+            "Ca": { meqToMmol: 0.5, mmolToMg: 40.08 },
+            "Mg": { meqToMmol: 0.5, mmolToMg: 24.3 }
+        };
+
+        function convert() {
+            const element = document.getElementById('element').value;
+            const inputValue = parseFloat(document.getElementById('inputValue').value);
+            const inputUnit = document.getElementById('inputUnit').value;
+            let results = "";
+
+            if (isNaN(inputValue)) {
+                results = "Por favor, introduce un número válido.";
+            } else {
+                const { meqToMmol, mmolToMg } = conversions[element];
+                let meq, mmol, mg;
+
+                switch (inputUnit) {
+                    case "meq":
+                        meq = inputValue;
+                        mmol = meq * meqToMmol;
+                        mg = mmol * mmolToMg;
+                        break;
+                    case "mmol":
+                        mmol = inputValue;
+                        meq = mmol / meqToMmol;
+                        mg = mmol * mmolToMg;
+                        break;
+                    case "mg":
+                        mg = inputValue;
+                        mmol = mg / mmolToMg;
+                        meq = mmol / meqToMmol;
+                        break;
+                }
+
+                results = `
+                    ${inputValue} ${inputUnit} equivalen a:<br>
+                    ${meq.toFixed(2)} meq<br>
+                    ${mmol.toFixed(2)} mmol<br>
+                    ${mg.toFixed(2)} mg
+                `;
+            }
+
+            document.getElementById('results').innerHTML = results;
+        }
+    </script>
+</body>
+</html>
